@@ -10,8 +10,8 @@ from torchvision.utils import make_grid
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, Subset, random_split, ConcatDataset
 
-from datasets_loading import all_datasets_loading, data_symmetry_viz
-from modules import model_definition
+from touch2touch.vq_vae.datasets_loading import all_datasets_loading, data_symmetry_viz
+from touch2touch.vq_vae.modules import model_definition
 import wandb
 
 GELSLIM_MEAN = torch.tensor([-0.0082, -0.0059, -0.0066])
@@ -85,36 +85,12 @@ def data_selection(dataset_name):
         bubbles_data_folders = [bubbles_new_data_path, bubbles_task_data_path, bubbles_test_objs]
         gelslim_data_folders = [gelslim_new_data_path, gelslim_task_data_path, gelslim_test_objs]
 
-        # test_tools = [
-        #         #   'r7p5mm_ati_T_shape',
-        #         #   'pattern_05_3_lines_angle_2',
-        #         #   'pattern_09_curves_degree_120_radios_10',
-        #         #   'pattern_16_ellipse_1',
-        #         #   'pattern_19_hex_2',
-        #         # 'test_obj_circle_peg_seen',
-        #         # 'test_obj_circle_peg_unseen',
-        #         # 'test_obj_hex_key_seen',
-        #         # 'test_obj_hex_peg_seen',
-        #         # 'test_obj_hex_peg_unseen',
-        #         # 'test_obj_rectangle_peg_seen',
-        #         # 'test_obj_rectangle_peg_unseen',
-        #         # 'test_obj_nut_seen',
-        #         'test_obj_hex_small_peg_seen',
-        #         'test_obj_square_small_peg_seen',
-        #         'test_obj_tilted_square_small_peg_seen',
-        #         # 'test_obj_hex_key_new_seen'
-        #         ]
-
         test_tools = ['pattern_02_2_lines_angle_2',
                       'pattern_05_3_lines_angle_2',
                       'pattern_08_curves_degree_45_radios_10',
                       'pattern_13_curves_degree_120_radios_20',
-                      'pattern_16_ellipse_1',
-                      'pattern_19_hex_2',
-                      'test_obj_hex_small_peg_seen',
-                      'test_obj_square_small_peg_seen',
-                      'test_obj_tilted_square_small_peg_seen'
                         ]
+        
     elif dataset_name == 'new_partial':
         bubbles_data_folders = [bubbles_new_dataset]
         gelslim_data_folders = [gelslim_new_dataset]
@@ -150,7 +126,6 @@ def main(args):
                                             ])
     
     bubbles_transform = transforms.Compose([transforms.Resize((128,128)),
-                                            # transforms.RandomRotation((180,180)),
                                             transforms.Normalize(BUBBLES_MEAN, BUBBLES_STD)
                                             ])
     
@@ -223,7 +198,7 @@ def main(args):
         print(f"Epoch = {epoch}/{args.num_epochs}")
         train_recons, train_vq = model.train_model(iter(train_loader), model, optimizer, args)
         center_val_recons, center_val_vq = model.val(iter(val_loader), model, args)
-        
+
         with open('{0}/best.pt'.format(save_filename), 'wb') as f:
             torch.save(model.state_dict(), f)
 
