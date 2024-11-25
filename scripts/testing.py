@@ -373,10 +373,10 @@ def get_data(tool_name, bubbles_path, gelslim_path, device, data_model, model_re
     
     return
 
-def visual_qualitative(gelslim_input, gelslim_ref, bubbles_gt, bubbles_pred, info):
+def visual_qualitative(gelslim_input, gelslim_ref, bubbles_gt, bubbles_pred, info, project_path,):
     idxs = [11, 22, 33, 44]
     # idxs = list(range(20))
-    icp_model_path = os.path.join( os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))), 'Pytorch-UNet/models/masking_sdf_new_dataset_model_new_dataset_tools_E30_B32_LR0.00001.pth')
+    icp_model_path = os.path.join(project_path, 'checkpoints/masking_unet/masking_sdf_new_dataset_model_new_dataset_tools_E30_B32_LR0.00001.pth')
 
     gelslim_input = gelslim_input[idxs]
     gelslim_input_viz_single = gelslim_input[:,1]
@@ -419,9 +419,6 @@ def visual_qualitative(gelslim_input, gelslim_ref, bubbles_gt, bubbles_pred, inf
     return visual_qualitative_results
 
 def visual_quantitative(bubbles_gt, bubbles_pred, device):
-    # import pdb; pdb.set_trace()
-    # bubbles_gt = bubbles_gt[:,0]
-    # bubbles_pred = bubbles_pred[:,0]
     bubbles_gt = torch.cat([bubbles_gt[:,1], bubbles_gt[:,0]], dim=0)
     bubbles_pred = torch.cat([bubbles_pred[:,1], bubbles_pred[:,0]], dim=0)
 
@@ -439,8 +436,8 @@ def visual_quantitative(bubbles_gt, bubbles_pred, device):
                                 }
     return visual_qualitative_results
 
-def functional_quantitative(tool_path, bubbles_gt, bubbles_pred, info, output_path, output_path_gt):
-    icp_model_path = os.path.join( os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))), 'Pytorch-UNet/models/masking_sdf_new_dataset_model_new_dataset_tools_E30_B32_LR0.00001.pth')
+def functional_quantitative(tool_path, bubbles_gt, bubbles_pred, info, project_path, output_path, output_path_gt):
+    icp_model_path = os.path.join( project_path, 'checkpoints/masking_unet/masking_sdf_new_dataset_model_new_dataset_tools_E30_B32_LR0.00001.pth')
    # Get the data for ICP
     bubbles_gt_data = get_bubbles_data_TST(bubbles_gt, info)
     bubbles_pred_data = get_bubbles_data_TST(bubbles_pred, info)
@@ -452,8 +449,6 @@ def functional_quantitative(tool_path, bubbles_gt, bubbles_pred, info, output_pa
     # Get the metrics
     gt_error, gt_cal_mean, gt_cal_std, gt_cal_acc_5, gt_cal_acc_10 = get_metrics(angles_p, angles_gt)
     pred_error, pred_cal_mean, pred_cal_std, pred_cal_acc_5, pred_cal_acc_10 = get_metrics(angles_p2, angles_pred)
-
-    # import pdb; pdb.set_trace()
 
     functional_results = {
                           'p_angles': angles_p,
@@ -475,15 +470,67 @@ def functional_quantitative(tool_path, bubbles_gt, bubbles_pred, info, output_pa
                                         'pred_cal_acc_10': pred_cal_acc_10
                                         }
                         }
-    # import pdb; pdb.set_trace()
+    
     return functional_results
+
+def diffusion_shift_stats(train_tools, train_path, model_results_path, gt_stats, pred_stats, args):
+    if not os.path.exists(os.path.join(model_results_path, 'stats.pt')):
+        for tool_name in train_tools:
+            dataset = TST_diffusion_metrics(tool_name, os.path.join(train_path, 'bubbles'), os.path.join(train_path, 'gelslims'), train_results_path, 'cpu', diffusion_idx = 0, dataset_norm = False, gt_stats = gt_stats, pred_stats = pred_stats, both=args.both)
+            dataloader = DataLoader(dataset, batch_size=len(dataset), shuffle=False)
+            bubbles_gt_metrics, bubbles_pred_metrics = next(iter(dataloader))
+
+            bubbles_gt_psum = bubbles_gt_metrics['gt_psum'].sum()
+            bubbles_gt_psum_sq = bubbles_gt_metrics['gt_psum_sq'].sum()
+            bubbles_gt_count = len(bubbles_gt_metrics['gt_shape'][0]) * bubbles_gt_metrics['gt_shape'][0][0] * bubbles_gt_metrics['gt_shape'][1][0] * bubbles_gt_metrics['gt_shape'][2][0] * bubbles_gt_metrics['gt_shape'][3][0]
+            bubbles_gt_mean = bubbles_gt_psum / bubbles_gt_count
+            bubbles_gt_std = torch.sqrt((bubbles_gt_psum_sq / bubbles_gt_count) - bubbles_gt_mean**2)
+
+            bubbles_pred_psum = bubbles_pred_metrics['pred_psum'].sum()
+            bubbles_pred_psum_sq = bubbles_pred_metrics['pred_psum_sq'].sum()
+            bubbles_pred_count = len(bubbles_pred_metrics['pred_shape'][0]) * bubbles_pred_metrics['pred_shape'][0][0] * bubbles_pred_metrics['pred_shape'][1][0] * bubbles_pred_metrics['pred_shape'][2][0] * bubbles_pred_metrics['pred_shape'][3][0]
+            bubbles_pred_mean = bubbles_pred_psum / bubbles_pred_count
+            bubbles_pred_std = torch.sqrt((bubbles_pred_psum_sq / bubbles_pred_count) - bubbles_pred_mean**2)
+
+            bubbles_gt_totat_psum += bubbles_gt_psum
+            bubbles_gt_totat_psum_sq += bubbles_gt_psum_sq
+            bubbles_pred_totat_psum += bubbles_pred_psum
+            bubbles_pred_totat_psum_sq += bubbles_pred_psum_sq
+            bubbles_gt_total_count += bubbles_gt_count
+            bubbles_pred_total_count += bubbles_pred_count
+
+            # print('Tool:', tool_name)
+            # print('GT mean:', bubbles_gt_metrics['gt_mean'].mean())
+            # print('GT std:', (bubbles_gt_metrics['gt_std']).mean())
+            # print('Pred mean:', bubbles_pred_metrics['pred_mean'].mean())
+            # print('Pred std:', (bubbles_pred_metrics['pred_std']).mean())
+            # print('GT mean new:', bubbles_gt_mean)
+            # print('GT std new:', bubbles_gt_std)
+            # print('Pred mean new:', bubbles_pred_mean)
+            # print('Pred std new:', bubbles_pred_std)
+        
+        bubbles_gt_mean = bubbles_gt_totat_psum / bubbles_gt_total_count
+        bubbles_gt_std = torch.sqrt((bubbles_gt_totat_psum_sq / bubbles_gt_total_count) - bubbles_gt_mean**2)
+        bubbles_pred_mean = bubbles_pred_totat_psum / bubbles_pred_total_count
+        bubbles_pred_std = torch.sqrt((bubbles_pred_totat_psum_sq / bubbles_pred_total_count) - bubbles_pred_mean**2)
+
+        print('Total GT mean:', bubbles_gt_mean)
+        print('Total GT std:', bubbles_gt_std)
+        print('Total Pred mean:', bubbles_pred_mean)
+        print('Total Pred std:', bubbles_pred_std)
+
+        gt_stats = (bubbles_gt_mean, bubbles_gt_std)
+        pred_stats = (bubbles_pred_mean, bubbles_pred_std)
+
+        torch.save({'gt_stats': gt_stats, 'pred_stats': pred_stats}, os.path.join(model_results_path, 'stats.pt'))
+        return gt_stats, pred_stats
         
 
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='TST Testing')
     parser.add_argument('--model', type=str, default='vq_vae', help='Model options: vq_vae, diffusion, diffusion_norm')
-    parser.add_argument('--name', type=str, default='VQ-VAE-new_data_split', help='Model name')
+    parser.add_argument('--name', type=str, default='rot_flip', help='Model name')
     parser.add_argument('--both' , action='store_true')
     parser.add_argument('--visual_qual' , action='store_true')
     parser.add_argument('--visual_quant' , action='store_true')
@@ -491,18 +538,23 @@ if __name__ == '__main__':
     parser.add_argument('--all_metrics' , action='store_true')
     args = parser.parse_args()
 
-    # Load Data
+    # Model details
     method = args.model
     name = args.name
-    project_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-    datasets_path = os.path.join(project_path, "new_processed_data")
+    project_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    output_folder_name = 'results'
+    print('Project Path:', project_path)
+    print('Method:', method)
+    print('Model:', name)
 
-    train_path = os.path.join(datasets_path, "testing", "test_samples", "train_only")
-    test_path = os.path.join(datasets_path, "testing", "test_samples", "test_only")
+    # Get data paths
+    datasets_path = os.path.join(project_path, "data")
+    train_path = os.path.join(datasets_path, "test", "train_only")
+    test_path = os.path.join(datasets_path, "test", "test_only")
     test_unseen_path = test_path
 
     if method == 'vq_vae':
-        model_results_path = os.path.join(datasets_path, "testing", "vq_vae_results", name)
+        model_results_path = os.path.join(project_path, "checkpoints", "vq_vae", name)
         model_path = os.path.join(model_results_path, "checkpoint.pt")
         results_paths = [model_path, model_path, model_path]
 
@@ -520,16 +572,17 @@ if __name__ == '__main__':
         results_paths = [train_results_path, test_results_path, test_results_path]
         results_paths = [test_results_path, test_results_path]
 
-    # train_tools = torch.load(os.path.join(model_results_path, "tools.pt"))['train_tools']
-    # train_tools.sort()
+    # Get tools
+    train_tools = torch.load(os.path.join(model_results_path, "tools.pt"))['train_tools']
+    train_tools.sort()
     test_tools = torch.load(os.path.join(model_results_path, "tools.pt"))['train_tools']
     test_tools.sort()
     test_unseen_tools = torch.load(os.path.join(model_results_path, "tools.pt"))['test_tools']
     test_unseen_tools.sort()
 
-    # print('Train tools:', len(train_tools))
-    # for tool in train_tools:
-    #     print(tool)
+    print('Train tools:', len(train_tools))
+    for tool in train_tools:
+        print(tool)
     print('-----------------------------')
     print('Test tools:', len(test_tools))
     for tool in test_tools:
@@ -540,18 +593,8 @@ if __name__ == '__main__':
         print(tool)
     print('-----------------------------')
 
-    # import pdb; pdb.set_trace()
-    print('Method:', method)
-    print('Model:', name)
-    # dataset_paths = [train_path, test_path, test_unseen_path]
-    # datasets = ["train", "test", "test_unseen"]
-    # datasets_tools = [train_tools, test_tools, test_unseen_tools]
-    output_folder_name = 'new_results_TST'
 
-    dataset_paths = [test_unseen_path]
-    datasets = ["test_unseen"]
-    datasets_tools = [test_unseen_tools]
-
+    # Get Shift Stats
     bubbles_gt_totat_psum = 0
     bubbles_gt_totat_psum_sq = 0
     bubbles_gt_total_count = 0
@@ -562,62 +605,16 @@ if __name__ == '__main__':
     pred_stats = (0.0219, 0.0024)
 
     if method == 'diffusion_norm' or method == 'diffusion':
-
-        if not os.path.exists(os.path.join(model_results_path, 'stats.pt')):
-            for tool_name in train_tools:
-                dataset = TST_diffusion_metrics(tool_name, os.path.join(train_path, 'bubbles'), os.path.join(train_path, 'gelslims'), train_results_path, 'cpu', diffusion_idx = 0, dataset_norm = False, gt_stats = gt_stats, pred_stats = pred_stats, both=args.both)
-                dataloader = DataLoader(dataset, batch_size=len(dataset), shuffle=False)
-                bubbles_gt_metrics, bubbles_pred_metrics = next(iter(dataloader))
-
-                bubbles_gt_psum = bubbles_gt_metrics['gt_psum'].sum()
-                bubbles_gt_psum_sq = bubbles_gt_metrics['gt_psum_sq'].sum()
-                bubbles_gt_count = len(bubbles_gt_metrics['gt_shape'][0]) * bubbles_gt_metrics['gt_shape'][0][0] * bubbles_gt_metrics['gt_shape'][1][0] * bubbles_gt_metrics['gt_shape'][2][0] * bubbles_gt_metrics['gt_shape'][3][0]
-                bubbles_gt_mean = bubbles_gt_psum / bubbles_gt_count
-                bubbles_gt_std = torch.sqrt((bubbles_gt_psum_sq / bubbles_gt_count) - bubbles_gt_mean**2)
-
-                bubbles_pred_psum = bubbles_pred_metrics['pred_psum'].sum()
-                bubbles_pred_psum_sq = bubbles_pred_metrics['pred_psum_sq'].sum()
-                bubbles_pred_count = len(bubbles_pred_metrics['pred_shape'][0]) * bubbles_pred_metrics['pred_shape'][0][0] * bubbles_pred_metrics['pred_shape'][1][0] * bubbles_pred_metrics['pred_shape'][2][0] * bubbles_pred_metrics['pred_shape'][3][0]
-                bubbles_pred_mean = bubbles_pred_psum / bubbles_pred_count
-                bubbles_pred_std = torch.sqrt((bubbles_pred_psum_sq / bubbles_pred_count) - bubbles_pred_mean**2)
-
-                bubbles_gt_totat_psum += bubbles_gt_psum
-                bubbles_gt_totat_psum_sq += bubbles_gt_psum_sq
-                bubbles_pred_totat_psum += bubbles_pred_psum
-                bubbles_pred_totat_psum_sq += bubbles_pred_psum_sq
-                bubbles_gt_total_count += bubbles_gt_count
-                bubbles_pred_total_count += bubbles_pred_count
-
-                # print('Tool:', tool_name)
-                # print('GT mean:', bubbles_gt_metrics['gt_mean'].mean())
-                # print('GT std:', (bubbles_gt_metrics['gt_std']).mean())
-                # print('Pred mean:', bubbles_pred_metrics['pred_mean'].mean())
-                # print('Pred std:', (bubbles_pred_metrics['pred_std']).mean())
-                # print('GT mean new:', bubbles_gt_mean)
-                # print('GT std new:', bubbles_gt_std)
-                # print('Pred mean new:', bubbles_pred_mean)
-                # print('Pred std new:', bubbles_pred_std)
-            
-            bubbles_gt_mean = bubbles_gt_totat_psum / bubbles_gt_total_count
-            bubbles_gt_std = torch.sqrt((bubbles_gt_totat_psum_sq / bubbles_gt_total_count) - bubbles_gt_mean**2)
-            bubbles_pred_mean = bubbles_pred_totat_psum / bubbles_pred_total_count
-            bubbles_pred_std = torch.sqrt((bubbles_pred_totat_psum_sq / bubbles_pred_total_count) - bubbles_pred_mean**2)
-
-            print('Total GT mean:', bubbles_gt_mean)
-            print('Total GT std:', bubbles_gt_std)
-            print('Total Pred mean:', bubbles_pred_mean)
-            print('Total Pred std:', bubbles_pred_std)
-
-            # import pdb; pdb.set_trace()
-            gt_stats = (bubbles_gt_mean, bubbles_gt_std)
-            pred_stats = (bubbles_pred_mean, bubbles_pred_std)
-
-            torch.save({'gt_stats': gt_stats, 'pred_stats': pred_stats}, os.path.join(model_results_path, 'stats.pt'))
+        gt_stats, pred_stats = diffusion_shift_stats(train_tools, train_path, model_results_path, gt_stats, pred_stats, args)
 
     stats = (gt_stats, pred_stats)
     datasets_stats = [stats, stats, stats]
 
-    # import pdb; pdb.set_trace()
+    # Define datasets
+    dataset_paths = [test_path, test_unseen_path]
+    datasets = ["test", "test_unseen"]
+    datasets_tools = [test_tools, test_unseen_tools]
+
 
     for j in range(len(dataset_paths)):
         dataset_path = dataset_paths[j]
@@ -633,9 +630,9 @@ if __name__ == '__main__':
             tool_stl = datasets_path + '/tools_stls/' + tool_name + '.stl'
             
             if args.both:
-                output_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), output_folder_name, "models", method + '_' + name  + '_both', dataset, tool_name)
+                output_path = os.path.join(project_path, output_folder_name, "models", method + '_' + name  + '_both', dataset, tool_name)
             else:
-                output_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), output_folder_name, "models", method + '_' + name, dataset, tool_name)
+                output_path = os.path.join(project_path, output_folder_name, "models", method + '_' + name, dataset, tool_name)
             
             if not os.path.exists(output_path):
                 os.makedirs(output_path)
@@ -646,7 +643,7 @@ if __name__ == '__main__':
             # Visual Qualitative Results
             if args.visual_qual or args.all_metrics:
                 if not os.path.exists(output_path + '/visual_qualitative_results.pt'):
-                    visual_qualitative_results = visual_qualitative(gelslim_input, gelslim_ref, bubbles_gt, bubbles_pred, info)
+                    visual_qualitative_results = visual_qualitative(gelslim_input, gelslim_ref, bubbles_gt, bubbles_pred, info, project_path)
                     torch.save(visual_qualitative_results, output_path + '/visual_qualitative_results.pt')
                 else:
                     visual_qualitative_results = torch.load(output_path + '/visual_qualitative_results.pt')
@@ -661,11 +658,11 @@ if __name__ == '__main__':
 
             # Quantitative Results
             if args.functional or args.all_metrics:
-                output_path_gt = os.path.join(os.path.dirname(os.path.realpath(__file__)), output_folder_name, "ground_truth", dataset, tool_name, 'functional_icp_results')
+                output_path_gt = os.path.join(project_path, output_folder_name, "ground_truth", dataset, tool_name, 'functional_icp_results')
                 if not os.path.exists(output_path_gt):
                     os.makedirs(output_path_gt)
                 if not os.path.exists(output_path + '/functional_results.pt'):
-                    functional_results = functional_quantitative(tool_stl, bubbles_gt, bubbles_pred, info, output_path + '/functional_icp_results', output_path_gt)
+                    functional_results = functional_quantitative(tool_stl, bubbles_gt, bubbles_pred, info, project_path, output_path + '/functional_icp_results', output_path_gt)
                     torch.save(functional_results, output_path + '/functional_results.pt')
                 else:
                     functional_results = torch.load(output_path + '/functional_results.pt')

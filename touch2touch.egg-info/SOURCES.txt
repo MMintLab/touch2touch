@@ -1,0 +1,6 @@
+README.md
+setup.py
+touch2touch.egg-info/PKG-INFO
+touch2touch.egg-info/SOURCES.txt
+touch2touch.egg-info/dependency_links.txt
+touch2touch.egg-info/top_level.txt

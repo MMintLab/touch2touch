@@ -170,21 +170,38 @@ class threshZeroed(object):
         gelslim_diff[gelslim_diff < self.thresh] = 0
         return gelslim_diff
     
-def logging_image_grid(images, captions, ncol=7, normalize = True):
+# def logging_image_grid(images, captions, ncol=7, normalize = True):
+#     if not normalize:
+#         norm_text = "_not_normalized"
+#     else:
+#         norm_text = ""
+
+#     grids = [make_grid(img, nrow=ncol,padding=1, normalize=normalize, scale_each=True, pad_value=1) for img in images]
+#     for grid, caption in zip(grids, captions):
+#         plt.imshow(np.asarray(grid.permute((1,2,0))))
+#         plt.title(caption)
+#         plt.subplots_adjust(left=0, right=1, bottom=0, top=1)
+#         ax = plt.gca()
+#         ax.get_xaxis().set_visible(False)
+#         ax.get_yaxis().set_visible(False)
+#         plt.show()
+#     return
+
+def logging_image_grid(images, captions, path, ncol=7, normalize = True, save = True):
     if not normalize:
         norm_text = "_not_normalized"
     else:
         norm_text = ""
 
-    grids = [make_grid(img, nrow=ncol,padding=1, normalize=normalize, scale_each=True, pad_value=1) for img in images]
+    grids = [make_grid(img, nrow=ncol,padding=1, normalize=normalize, scale_each=True) for img in images]
     for grid, caption in zip(grids, captions):
-        plt.imshow(np.asarray(grid.permute((1,2,0))))
-        plt.title(caption)
-        plt.subplots_adjust(left=0, right=1, bottom=0, top=1)
-        ax = plt.gca()
-        ax.get_xaxis().set_visible(False)
-        ax.get_yaxis().set_visible(False)
-        plt.show()
+        if save:
+            save_image(grid, path +  '/' + caption + norm_text + '.png')
+        else:
+            plt.imshow(np.asarray(grid.permute((1,2,0)).cpu()))
+            plt.title(caption)
+            plt.axis('off')
+            plt.show()
     return
 
 def sort_order(filename):
