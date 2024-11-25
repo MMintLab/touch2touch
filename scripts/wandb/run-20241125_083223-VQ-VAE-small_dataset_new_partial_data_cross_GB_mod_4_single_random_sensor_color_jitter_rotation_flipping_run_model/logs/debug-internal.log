@@ -201,3 +201,8 @@
 2024-11-25 08:43:08,384 DEBUG   SenderThread:767606 [sender.py:send():232] send: stats
 2024-11-25 08:43:22,746 DEBUG   HandlerThread:767606 [handler.py:handle_request():141] handle_request: stop_status
 2024-11-25 08:43:22,746 DEBUG   SenderThread:767606 [sender.py:send_request():246] send_request: stop_status
+2024-11-25 08:43:37,860 DEBUG   HandlerThread:767606 [handler.py:handle_request():141] handle_request: stop_status
+2024-11-25 08:43:37,861 DEBUG   SenderThread:767606 [sender.py:send_request():246] send_request: stop_status
+2024-11-25 08:43:39,120 DEBUG   SenderThread:767606 [sender.py:send():232] send: stats
+2024-11-25 08:43:53,086 DEBUG   HandlerThread:767606 [handler.py:handle_request():141] handle_request: stop_status
+2024-11-25 08:43:53,086 DEBUG   SenderThread:767606 [sender.py:send_request():246] send_request: stop_status
