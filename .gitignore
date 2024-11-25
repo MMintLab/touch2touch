@@ -3,3 +3,6 @@
 /results
 /new_results_TST
 /touch2touch/pytorch-fid
+/touch2touch/scripts/logs
+/touch2touch/scripts/models
+/touch2touch/scripts/wandb

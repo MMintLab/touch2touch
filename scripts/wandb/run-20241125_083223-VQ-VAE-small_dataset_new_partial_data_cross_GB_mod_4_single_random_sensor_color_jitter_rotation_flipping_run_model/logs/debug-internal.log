@@ -190,3 +190,14 @@
 2024-11-25 08:42:06,975 DEBUG   SenderThread:767606 [sender.py:send():232] send: stats
 2024-11-25 08:42:22,005 DEBUG   HandlerThread:767606 [handler.py:handle_request():141] handle_request: stop_status
 2024-11-25 08:42:22,005 DEBUG   SenderThread:767606 [sender.py:send_request():246] send_request: stop_status
+2024-11-25 08:42:37,240 DEBUG   HandlerThread:767606 [handler.py:handle_request():141] handle_request: stop_status
+2024-11-25 08:42:37,240 DEBUG   SenderThread:767606 [sender.py:send_request():246] send_request: stop_status
+2024-11-25 08:42:37,633 DEBUG   SenderThread:767606 [sender.py:send():232] send: stats
+2024-11-25 08:42:52,363 DEBUG   HandlerThread:767606 [handler.py:handle_request():141] handle_request: stop_status
+2024-11-25 08:42:52,363 DEBUG   SenderThread:767606 [sender.py:send_request():246] send_request: stop_status
+2024-11-25 08:43:01,052 INFO    Thread-7  :767606 [dir_watcher.py:_on_file_modified():257] file/dir modified: /home/samanta/touch2touch/scripts/wandb/run-20241125_083223-VQ-VAE-small_dataset_new_partial_data_cross_GB_mod_4_single_random_sensor_color_jitter_rotation_flipping_run_model/files/output.log
+2024-11-25 08:43:07,556 DEBUG   HandlerThread:767606 [handler.py:handle_request():141] handle_request: stop_status
+2024-11-25 08:43:07,556 DEBUG   SenderThread:767606 [sender.py:send_request():246] send_request: stop_status
+2024-11-25 08:43:08,384 DEBUG   SenderThread:767606 [sender.py:send():232] send: stats
+2024-11-25 08:43:22,746 DEBUG   HandlerThread:767606 [handler.py:handle_request():141] handle_request: stop_status
+2024-11-25 08:43:22,746 DEBUG   SenderThread:767606 [sender.py:send_request():246] send_request: stop_status
