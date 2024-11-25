@@ -42,62 +42,18 @@ def logging_image_grid(images, captions, step = 0, ncol=7, normalize = True):
         wandb.log(data = {caption+norm_text: image}, step = step)
     return
 
-def data_selection(dataset_name):
-    # bubbles_old_data_path = "/home/samanta/tactile_style_transfer/processed_data/bubbles_processed_data"
-    # bubbles_new_data_path = "/home/samanta/tactile_style_transfer/processed_data/new_bubbles_filtered_data"
-    # bubbles_task_data_path = "/home/samanta/tactile_style_transfer/processed_data/new_bubbles_peg_in_hole_data"
-    # bubbles_test_objs = "/home/samanta/tactile_style_transfer/processed_data/new_bubbles_test_objs"
-    # gelslim_old_data_path = "/home/samanta/tactile_style_transfer/processed_data/gelslim_processed_data"
-    # gelslim_new_data_path = "/home/samanta/tactile_style_transfer/processed_data/new_gelslim_filtered_data"
-    # gelslim_task_data_path = "/home/samanta/tactile_style_transfer/processed_data/new_gelslim_peg_in_hole_data"
-    # gelslim_test_objs = "/home/samanta/tactile_style_transfer/processed_data/new_gelslim_test_objs"
+def data_selection():
+    project_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-    project_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-    datasets_path = os.path.join(project_path, "processed_data")
-
-    bubbles_old_data_path = os.path.join(datasets_path, "back_ups/old_bubbles_processed_data")
-    bubbles_new_data_path = os.path.join(datasets_path, "bubbles/bubbles_training_data_filtered_flipped")
-    bubbles_task_data_path = os.path.join(datasets_path, "bubbles/bubbles_training_data_processed_flipped_2")
-    bubbles_test_objs = os.path.join(datasets_path, "bubbles/bubbles_testing_data_processed_flipped_2")
-    gelslim_old_data_path = os.path.join(datasets_path, "back_ups/old_gelslim_processed_data")
-    gelslim_new_data_path = os.path.join(datasets_path, "gelslims/gelslim_training_data_filtered_flipped")
-    gelslim_task_data_path = os.path.join(datasets_path, "gelslims/gelslim_training_data_processed_flipped_2")
-    # gelslim_test_objs = os.path.join(datasets_path, "gelslims/gelslim_testing_data_processed_flipped")
-    gelslim_test_objs = os.path.join(datasets_path, "gelslims/gelslim_testing_data_processed_flipped_2")
-
-    datasets_path = os.path.join(project_path, "new_processed_data")
+    datasets_path = os.path.join(project_path, "data/train")
     bubbles_new_dataset = os.path.join(datasets_path, "bubbles/data")
     gelslim_new_dataset = os.path.join(datasets_path, "gelslims/data")
-    # import pdb; pdb.set_trace()
 
-    if dataset_name == 'old':
-        bubbles_data_folders = [bubbles_old_data_path]
-        gelslim_data_folders = [gelslim_old_data_path]
+    bubbles_data_folders = [bubbles_new_dataset]
+    gelslim_data_folders = [gelslim_new_dataset]
 
-        test_tools = [
-                        'r7p5mm_ati_T_shape',
-                        # 'test_obj_nut',
-                        # 'test_obj_pen',
-                        # 'test_obj_pen_back',
-                        # 'test_obj_hex_key'
-                     ]
-    elif dataset_name == 'new':
-        bubbles_data_folders = [bubbles_new_data_path, bubbles_task_data_path, bubbles_test_objs]
-        gelslim_data_folders = [gelslim_new_data_path, gelslim_task_data_path, gelslim_test_objs]
+    test_tools = ['pattern_05_3_lines_angle_2','pattern_35', 'pattern_36']
 
-        test_tools = ['pattern_02_2_lines_angle_2',
-                      'pattern_05_3_lines_angle_2',
-                      'pattern_08_curves_degree_45_radios_10',
-                      'pattern_13_curves_degree_120_radios_20',
-                        ]
-        
-    elif dataset_name == 'new_partial':
-        bubbles_data_folders = [bubbles_new_dataset]
-        gelslim_data_folders = [gelslim_new_dataset]
-
-        test_tools = ['pattern_05_3_lines_angle_2','pattern_35', 'pattern_36']
-
-    
     return bubbles_data_folders, gelslim_data_folders, test_tools
     
 
@@ -107,10 +63,10 @@ def main(args):
     # Logging
     if args.debug:
         logging_freq = 1
-        project = 'TST Debugging'
+        project = 'T2T_Debugging'
     else:
         logging_freq = 10
-        project = 'Relevant Models'
+        project = 'T2T'
 
     wandb.init(
             project=project,
@@ -129,7 +85,7 @@ def main(args):
                                             transforms.Normalize(BUBBLES_MEAN, BUBBLES_STD)
                                             ])
     
-    bubbles_data_folders, gelslim_data_folders, test_tools = data_selection(args.dataset)
+    bubbles_data_folders, gelslim_data_folders, test_tools = data_selection()
 
     if args.dataset == 'new':
         all = False

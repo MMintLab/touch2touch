@@ -1,0 +1,25 @@
+0 pattern_01_2_lines_angle_1
+dataset length 1344
+1 pattern_02_2_lines_angle_2
+dataset length 1344
+2 pattern_03_2_lines_angle_3
+dataset length 1344
+3 pattern_04_3_lines_angle_1
+dataset length 1344
+5 pattern_06_5_lines_angle_1
+dataset length 1344
+6 pattern_31_rod
+dataset length 1344
+7 pattern_32
+dataset length 1344
+8 pattern_33
+dataset length 1344
+11 pattern_37
+dataset length 1344
+Epoch = 0/2500
+Epoch = 1/2500
+Epoch = 2/2500
+Epoch = 3/2500
+Epoch = 4/2500
+Epoch = 5/2500
+Epoch = 6/2500

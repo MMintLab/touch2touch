@@ -1,0 +1,39 @@
+{
+    "os": "Linux-5.4.0-113-generic-x86_64-with-glibc2.17",
+    "python": "3.8.10",
+    "heartbeatAt": "2024-11-25T08:32:24.944393",
+    "startedAt": "2024-11-25T08:32:23.103182",
+    "docker": null,
+    "gpu": "NVIDIA RTX A6000",
+    "gpu_count": 4,
+    "cpu_count": 64,
+    "cuda": null,
+    "args": [
+        "--model_type",
+        "VQ-VAE-small",
+        "--device",
+        "cuda:0",
+        "--data",
+        "cross_GB",
+        "--dataset",
+        "new_partial",
+        "--mod",
+        "4",
+        "--random_sensor",
+        "--color_jitter",
+        "--rotation",
+        "--flipping"
+    ],
+    "state": "running",
+    "program": "train_vq_vae.py",
+    "codePath": "scripts/train_vq_vae.py",
+    "git": {
+        "remote": "git@github.com:MMintLab/touch2touch.git",
+        "commit": "0b9d58b08bb35cabb2b78b582ea1eacbf37e24d0"
+    },
+    "email": "samanrod@umich.edu",
+    "root": "/home/samanta/touch2touch",
+    "host": "exxact",
+    "username": "samanta",
+    "executable": "/home/samanta/.conda/envs/haptics_bl/bin/python"
+}
