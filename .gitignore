@@ -6,3 +6,9 @@
 /touch2touch/scripts/logs
 /touch2touch/scripts/models
 /touch2touch/scripts/wandb
+/touch2touch/stable_diffusion/data
+/touch2touch/stable_diffusion/logs
+/touch2touch/stable_diffusion/models
+/touch2touch/stable_diffusion/outputs
+/touch2touch/stable_diffusion/outputs_nobackup
+/touch2touch/stable_diffusion/ldm/modules/encoders/ckpt
