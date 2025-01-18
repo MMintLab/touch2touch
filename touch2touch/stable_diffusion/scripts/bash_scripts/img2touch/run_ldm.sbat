@@ -1,0 +1,41 @@
+#!/bin/bash
+#“#SBATCH” directives that convey submission options:
+##### The name of the job
+#SBATCH --job-name=ldm
+
+##### When to send e-mail: pick from NONE, BEGIN, END, FAIL, REQUEUE, ALL
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=ymdou@umich.edu
+
+##### Resources for your job
+# number of physical nodes
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem-per-cpu=11GB
+#SBATCH --time=5-00:00:00
+
+##### The resource account; who pays
+#SBATCH --account=ahowens1
+#SBATCH --partition=spgpu
+#SBATCH --gres gpu:1
+#SBATCH --output=/nfs/turbo/coe-ahowens/fredyang/stable-diffusion/logs/slurm_out/%x-%j.log
+########## End of preamble! #########################################
+# No need to “cd”. Slurm starts the job in the submission directory.
+#####################################################################
+# The application(s) to execute along with its input arguments and options:
+my_job_header
+
+/bin/hostname
+cat $0
+echo "--------------------"
+conda init zsh
+conda activate ldm
+
+echo $CONDA_DEFAULT_ENV
+nvidia-smi
+# sh scripts/bash_scripts/img2touch/run_ldm.sh train
+sh scripts/bash_scripts/img2touch/run_ldm.sh eval
+# python visual_tactile_reranking.py
+# python -m pytorch_fid /nfs/turbo/coe-ahowens/fredyang/stable-diffusion/outputs_nobackup/img2touch-tactile_nerf_rgbdbg_interval_new/eval/gt /nfs/turbo/coe-ahowens/fredyang/stable-diffusion/outputs_nobackup/img2touch-tactile_nerf_rgbdbg_interval_new/eval/pred --device cuda
+echo done!
