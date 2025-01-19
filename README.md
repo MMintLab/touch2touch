@@ -1,6 +1,7 @@
 # touch2touch
 
-This repository shows the main files for training a cross-modal tactile generation model using the VQ-VAE architecture and the main files to evaluate its performance.
+This repository shows the main files for:
+ * training a cross-modal tactile generation model using the VQ-VAE architecture and the main files for evaluating its performance.
 
 # Dataset
 We use Touch2Touch Dataset.
