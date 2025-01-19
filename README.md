@@ -13,7 +13,7 @@ Project Webpage: https://www.mmintlab.com/research/touch2touch/
 Paper: [https://www.arxiv.org/abs/2409.08269](https://www.arxiv.org/abs/2409.08269)
 
 # Get Touch2Touch Dataset
-* Get data folder from https:[//drive.google.com/drive/folders/15vWo5AWw9xVKE1wHbLhzm40ClPyRBYk5?usp=sharing](https://drive.google.com/drive/folders/15vWo5AWw9xVKE1wHbLhzm40ClPyRBYk5?usp=drive_link)
+* Download data folder from https:[//drive.google.com/drive/folders/15vWo5AWw9xVKE1wHbLhzm40ClPyRBYk5?usp=sharing](https://drive.google.com/drive/folders/15vWo5AWw9xVKE1wHbLhzm40ClPyRBYk5?usp=drive_link)
 * Add to the repository folder recommended location:
 ```
 <PATH_TO_REPO>
