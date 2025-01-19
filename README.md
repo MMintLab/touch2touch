@@ -1,7 +1,10 @@
 # touch2touch
 
-This repository shows the main files for:
- * training a cross-modal tactile generation model using the VQ-VAE architecture and the main files for evaluating its performance.
+This repository shows the main files to:
+ * Training a cross-modal tactile generation model using the Stable Diffusion architecture (Coming soon).
+ * Infer the tactile generation of Soft Bubble images from GelSlim images using our stable diffusion checkpoint.
+ * Training a cross-modal tactile generation model using the VQ-VAE architecture.
+ * Evaluating cross-modal tactile generation performance for diffusion models and VQ-VAE model architectures.
 
 # Dataset
 We use Touch2Touch Dataset.
