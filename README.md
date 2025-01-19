@@ -1,4 +1,5 @@
 # touch2touch
+Today's touch sensors come in many shapes and sizes. This has made it challenging to develop general-purpose touch processing methods since models are generally tied to one specific sensor design. We address this problem by performing cross-modal prediction between touch sensors: given the tactile signal from one sensor, we use a generative model to estimate how the same physical contact would be perceived by another sensor. This allows us to apply sensor-specific methods to the generated signal. We implement this idea by training a diffusion model to translate between the popular GelSlim and Soft Bubble sensors. As a downstream task, we perform in-hand object pose estimation using GelSlim sensors while using an algorithm that operates only on Soft Bubble signals. 
 
 This repository shows the main files to:
  * Training a cross-modal tactile generation model using the Stable Diffusion architecture (Coming soon).
@@ -8,6 +9,7 @@ This repository shows the main files to:
 
 # Dataset
 We use Touch2Touch Dataset.
+Project Webpage: 
 
 Paper: [https://www.arxiv.org/abs/2409.08269](https://www.arxiv.org/abs/2409.08269)
 
