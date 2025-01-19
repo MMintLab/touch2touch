@@ -4,8 +4,9 @@ Today's touch sensors come in many shapes and sizes. This has made it challengin
 This repository shows the main files to:
  * Training a cross-modal tactile generation model using the Stable Diffusion architecture (Coming soon).
  * Infer the tactile generation of Soft Bubble images from GelSlim images using our stable diffusion checkpoint.
+ * Evaluating cross-modal tactile generation performance with diffusion model architectures.
  * Training a cross-modal tactile generation model using the VQ-VAE architecture.
- * Evaluating cross-modal tactile generation performance for diffusion models and VQ-VAE model architectures.
+ * Evaluating cross-modal tactile generation performance with VQ-VAE model architectures.
 
 Project Webpage: https://www.mmintlab.com/research/touch2touch/
 
