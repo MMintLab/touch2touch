@@ -7,13 +7,11 @@ This repository shows the main files to:
  * Training a cross-modal tactile generation model using the VQ-VAE architecture.
  * Evaluating cross-modal tactile generation performance for diffusion models and VQ-VAE model architectures.
 
-# Dataset
-We use Touch2Touch Dataset.
-Project Webpage: 
+Project Webpage: https://www.mmintlab.com/research/touch2touch/
 
 Paper: [https://www.arxiv.org/abs/2409.08269](https://www.arxiv.org/abs/2409.08269)
 
-Dataset: https://drive.google.com/drive/folders/15vWo5AWw9xVKE1wHbLhzm40ClPyRBYk5?usp=sharing
+Touch2Touch Dataset: https://drive.google.com/drive/folders/15vWo5AWw9xVKE1wHbLhzm40ClPyRBYk5?usp=sharing
 
 # Conda Environment Setup
 Before running the code, please setup the right conda environment. You can download the .yml file from: https://drive.google.com/file/d/1vEvKdE5AxCES3c5P4aMf-l-FlOj6UBUd/view?usp=drive_link
