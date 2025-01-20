@@ -19,6 +19,13 @@ Paper: [https://www.arxiv.org/abs/2409.08269](https://www.arxiv.org/abs/2409.082
 <PATH_TO_REPO>
 |---data
 ```
+# Get Stable Diffusion and VQ-VAE Checkpoints
+* Download checkpoints folder from https:[//drive.google.com/drive/folders/15vWo5AWw9xVKE1wHbLhzm40ClPyRBYk5?usp=sharing](https://drive.google.com/drive/folders/15vWo5AWw9xVKE1wHbLhzm40ClPyRBYk5?usp=drive_link)
+* Add to the repository folder recommended location:
+```
+<PATH_TO_REPO>
+|---checkpoints
+```
 
 # Training using the Stable Diffusion architecture
 Coming soon
@@ -30,20 +37,27 @@ Before running the code, please setup the right conda environment. You can downl
 conda env create -f ldm.yml
 conda activate ldm
 ```
+
 ## Get all necessary checkpoints for inference using Stable Diffusion
 * Download models folder from [stable_diffusion_add_ckpts](https://drive.google.com/drive/folders/1Dx9v6N3RFlPp12NNVr-bBvDKaY64HvQd?usp=drive_link) and add it to ```<PATH_TO_REPO>/touch2touch/stable_diffusion/models```
+* Download ckpt folder from [stable_diffusion_add_ckpts](https://drive.google.com/drive/folders/1Dx9v6N3RFlPp12NNVr-bBvDKaY64HvQd?usp=drive_link) and add it to ```<PATH_TO_REPO>/touch2touch/stable_diffusion/ldm/modules/encoders/ckpt```
 
+## Running inference script
+```
+cd /home/samanta/touch2touch/touch2touch/stable_diffusion
+/home/samanta/touch2touch/touch2touch/stable_diffusion/scripts/bash_scripts/tactile_style_transfer/run_ldm_estimator.sh
+```
 
 # Conda Environment Setup
-Before running the code, please setup the right conda environment. You can download the touch2touch.yml file from: https://drive.google.com/file/d/1vEvKdE5AxCES3c5P4aMf-l-FlOj6UBUd/view?usp=drive_link
-
+Before running the following script, please setup the right conda environment. You can download the touch2touch.yml file from: https://drive.google.com/file/d/1vEvKdE5AxCES3c5P4aMf-l-FlOj6UBUd/view?usp=drive_link
 ```
 conda env create -f touch2touch.yml
 conda activate haptics_bl
 ```
-
-# Checkpoints
-Touch2Touch VQ-VAE Model Checkpoint: https://drive.google.com/file/d/10_HR54aKSUuF3hQPTY1zLOgYuBHMITch/view?usp=drive_link
+# Evaluating Stable Diffusion Model
+```
+python testing.py --model diffusion_norm --name rot_flip
+```
 
 # Training using VQVAE Model
 ```
@@ -53,5 +67,5 @@ python train_vq_vae.py --model_type VQ-VAE-small --device cuda:0 --data cross_GB
 
 # Evaluating VQVAE Model
 ```
-python testing.py
+python testing.py --model vqvae --name rot_flip
 ```
