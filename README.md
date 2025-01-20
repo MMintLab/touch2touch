@@ -49,7 +49,7 @@ cd /home/samanta/touch2touch/touch2touch/stable_diffusion
 ```
 
 # Conda Environment Setup
-Before running the following script, please setup the right conda environment. You can download the touch2touch.yml file from: https://drive.google.com/file/d/1vEvKdE5AxCES3c5P4aMf-l-FlOj6UBUd/view?usp=drive_link
+Before running the following scripts, please setup the right conda environment. You can download the touch2touch.yml file from: https://drive.google.com/file/d/1vEvKdE5AxCES3c5P4aMf-l-FlOj6UBUd/view?usp=drive_link
 ```
 conda env create -f touch2touch.yml
 conda activate haptics_bl
