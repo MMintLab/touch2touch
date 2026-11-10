@@ -1,0 +1,6 @@
+[submodule "touch2touch/stable_diffusion/src/clip"]
+	path = touch2touch/stable_diffusion/src/clip
+	url = https://github.com/openai/CLIP.git
+[submodule "touch2touch/stable_diffusion/src/taming_transformers"]
+	path = touch2touch/stable_diffusion/src/taming_transformers
+	url = https://github.com/CompVis/taming-transformers.git
