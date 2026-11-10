@@ -445,7 +445,12 @@ def main():
     output = args.output.resolve() if args.output is not None else None
     if args.predictions:
         args.predictions = args.predictions.resolve()
-    sys.path[:0] = [str(REPO), str(DIFFUSION)]
+    # Direct script execution adds scripts/ to sys.path. Its wandb/ log
+    # directory can masquerade as an installed optional wandb package.
+    scripts_directory = Path(__file__).resolve().parent
+    sys.path[:] = [str(REPO), str(DIFFUSION)] + [
+        entry for entry in sys.path if Path(entry).resolve() != scripts_directory
+    ]
     preflight(samples, args)
     if args.preflight_only:
         return
