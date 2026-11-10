@@ -42,10 +42,25 @@ conda activate ldm
 * Download models folder from [stable_diffusion_add_ckpts](https://drive.google.com/drive/folders/1Dx9v6N3RFlPp12NNVr-bBvDKaY64HvQd?usp=drive_link) and add it to ```<PATH_TO_REPO>/touch2touch/stable_diffusion/models```
 * Download ckpt folder from [stable_diffusion_add_ckpts](https://drive.google.com/drive/folders/1Dx9v6N3RFlPp12NNVr-bBvDKaY64HvQd?usp=drive_link) and add it to ```<PATH_TO_REPO>/touch2touch/stable_diffusion/ldm/modules/encoders/ckpt```
 
-## Running inference script
+## Running inference
+
+From the repository root, with the model environment active:
+
+```bash
+bash touch2touch/stable_diffusion/scripts/bash_scripts/tactile_style_transfer/run_ldm_estimator.sh
 ```
-cd /home/samanta/touch2touch/touch2touch/stable_diffusion
-/home/samanta/touch2touch/touch2touch/stable_diffusion/scripts/bash_scripts/tactile_style_transfer/run_ldm_estimator.sh
+
+The launcher runs from `touch2touch/stable_diffusion` so the autoencoder path
+in the YAML resolves correctly. The `data`, `checkpoints`, and
+`touch2touch/stable_diffusion/models` directories can be symlinks to files
+stored outside the repository.
+
+For a smoke test, place one GelSlim `.pt` file in `data/test/smoke/gelslims`
+and override the input directory and number of sampling steps:
+
+```bash
+bash touch2touch/stable_diffusion/scripts/bash_scripts/tactile_style_transfer/run_ldm_estimator.sh \
+  --indir "$PWD/data/test/smoke/gelslims" --ddim_steps 10
 ```
 
 # Conda Environment Setup
